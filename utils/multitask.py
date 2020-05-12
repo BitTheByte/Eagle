@@ -45,7 +45,7 @@ def _worker(wid,target,channel,lock,callback=None):
             try:
                 retval = target(*args)
             except Exception  as e :
-                print(str(e))
+                #print(str(e))
                 retval = None
             
             with lock: channel.jobs -= 1
