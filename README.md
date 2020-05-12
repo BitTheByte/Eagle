@@ -32,18 +32,18 @@ $ python3 -m pip install -r requirements.txt
 #### Ping
 This mode is only for checking online targets
 ```
-$ python3 main.py -t domains.txt --ping
+$ python3 main.py -f domains.txt --ping
 ```
 #### Basic usage
 ```
-$ python3 main.py -t domains.txt
+$ python3 main.py -f domains.txt
 ```
 `domains.txt`: is a text file containing host names or ips, new line separated 
   
   
 #### Advanced usage 
 ```
-$ python3 main.py -t domains.txt -w 10 --db output.db.json
+$ python3 main.py -f domains.txt -w 10 --db output.db.json
 ```
 `domains.txt`: is a text file containing host names or ips, new line separated  
 `output.db.json`: json formated output of the tool (will be used to restore state in future releases)  
