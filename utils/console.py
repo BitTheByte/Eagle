@@ -23,7 +23,7 @@ statup_time = datetime.datetime.now().strftime("%d-%m-%Y.%H.%M.%S")
 open(sys.path[0]+"/logs/%s.log" % statup_time , "a+").write(' '.join(sys.argv) + "\n")
 
 parser = argparse.ArgumentParser(description='[*] Project Eagle - Manual' )
-parser.add_argument('--workers',type=int, help='concurrent workers number default=5',default=5)
+parser.add_argument('--workers','-w',type=int, help='concurrent workers number default=5',default=5)
 parser.add_argument('--db',type=str,help='database file path',default=sys.path[0]+"/db/default.db.json")
 parser.add_argument('-f','--file', help='targets file',type=str)
 parser.add_argument('-v','--verbose', help='increase output verbosity',action="count",default=0)
