@@ -2,13 +2,14 @@ from utils.status import *
 from .helper import Plugin,utils
 from dns import resolver
 import json
+import sys
 
 class TakeOver(Plugin):
     def __init__(self):
         self.name         = "Subdomain Takeover"
         self.enable       = True
         self.description  = ""
-        self.fingerprints = json.loads( open("plugins/files/fingerprints.json","r").read() )
+        self.fingerprints = json.loads( open(sys.path[0]+"/plugins/files/fingerprints.json","r").read() )
 
     def presquites(self, host):
         if utils.isalive( utils.uri(host) ):
