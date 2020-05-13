@@ -1,6 +1,5 @@
 requests
 boto3
-pydns
-dnslib
+dnspython
 tldextract
 lxml
