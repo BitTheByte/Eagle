@@ -1,23 +1,24 @@
+import os
+import sys
 from base64 import b64encode
 from utils.db import JsonDB
 from utils.status import *
-
 import utils.multitask as multitask
 import utils.console as console
+
+targets  = [x.strip() for x in open(console.args.file,"r").readlines() if x.strip()]
+dir_target = os.path.dirname(os.path.realpath(console.args.file))
+
+os.chdir(sys.path[0])
 import utils.data as data
 import plugins
 import scripts
 import signal
-import os
 
-
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
 console.banner( len(plugins.loader.loaded) )
-
+os.chdir(dir_target)
 channels = {}
 db       = JsonDB(console.args.db)
-targets  = [x.strip() for x in open(console.args.file,"r").readlines() if x.strip()]
-
 
 def onexit(sig,frame):
     for plugin  in plugins.loader.loaded:
@@ -46,7 +47,6 @@ def dbsave(result):
     })
 
     db.save()
-
 
 def scan(host):
     for plugin in plugins.loader.loaded:

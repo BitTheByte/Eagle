@@ -10,7 +10,7 @@ class SensitiveFiles(Plugin):
         self.enable      = True
         self.description = ""
         self.concurrent  = 12
-        self.__files     = [line.strip() for line in open("plugins/files/senstivefiles.txt").readlines() if line.strip()]
+        self.__files     = [line.strip() for line in open(sys.path[0]+"/plugins/files/senstivefiles.txt").readlines() if line.strip()]
         self.__lock  = threading.Lock()
         self.__cache = {}
         self.__found = {}

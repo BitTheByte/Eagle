@@ -6,7 +6,6 @@ import re
 from threading import Lock
 lock = Lock()
 
-
 banner_str = """
     .---.        .-----------
    /     \  __  /    ------
@@ -21,15 +20,18 @@ banner_str = """
   Project Eagle - Main Engine
 """
 statup_time = datetime.datetime.now().strftime("%d-%m-%Y.%H.%M.%S")
-open("logs/%s.log" % statup_time , "a+").write(' '.join(sys.argv) + "\n")
+open(sys.path[0]+"/logs/%s.log" % statup_time , "a+").write(' '.join(sys.argv) + "\n")
 
 parser = argparse.ArgumentParser(description='[*] Project Eagle - Manual' )
-parser.add_argument('--workers',type=int, help='concurrent workers number default=5',default=5)
-parser.add_argument('--db',type=str,help='database file path',default="db/default.db.json")
+parser.add_argument('--workers','-w',type=int, help='concurrent workers number default=5',default=5)
+parser.add_argument('--db',type=str,help='database file path',default=sys.path[0]+"/db/default.db.json")
 parser.add_argument('-f','--file', help='targets file',type=str)
 parser.add_argument('-v','--verbose', help='increase output verbosity',action="count",default=0)
 parser.add_argument('-p','--ping',action='store_true', help='check availability of targets')
 args = parser.parse_args()
+if len(sys.argv) < 2:
+    parser.print_help()
+    exit(0)
 
 def escape_ansi(line):
     ansi_escape = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]')
@@ -48,7 +50,7 @@ def output(level,msg):
         
         msg  = "[%s] |%s| %s\n" % (datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"),level,msg)
 
-        open("logs/%s.log" % statup_time , "a+").write(escape_ansi(msg))
+        open(sys.path[0]+"/logs/%s.log" % statup_time , "a+").write(escape_ansi(msg))
         print(msg,end='')
 
 def pprint(result):

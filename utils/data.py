@@ -14,4 +14,4 @@ def decompress(data):
 
 savelock = threading.Lock()
 def savetofile(name,content):
-    with savelock: open("output/"+name ,'a+').write(content)
+    with savelock: open(sys.path[0]+"/output/"+name ,'a+').write(content)
