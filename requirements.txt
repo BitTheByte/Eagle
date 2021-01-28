@@ -4,3 +4,4 @@ dnspython
 tldextract
 lxml
 bs4
+colorama
