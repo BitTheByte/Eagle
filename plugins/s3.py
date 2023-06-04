@@ -22,9 +22,7 @@ class S3Security(Plugin):
         self.__cache     = {}
 
     def presquites(self, host):
-        if self.s3bucket(host) != False:
-            return True
-        return False
+        return self.s3bucket(host) != False
 
     @OnErrorReturnValue(False)
     def s3bucket(self,host):
@@ -32,7 +30,7 @@ class S3Security(Plugin):
             return self.__cache[host]
 
         # Method 1
-        s3_url = "http://%s.s3.amazonaws.com" % host
+        s3_url = f"http://{host}.s3.amazonaws.com"
 
         if utils.requests.head(s3_url).status_code != 404:
             with self.lock:
@@ -40,11 +38,14 @@ class S3Security(Plugin):
             return host
 
         # Method 2
-        request = utils.requests.get(utils.uri(host) + "notfoundfile.scan", params={
-            "AWSAccessKeyId" : "AKIAI4UZT4FCOF2OTJYQ",
-            "Expires"        : "1766972005",
-            "Signature"      : "helloworld"
-        }) 
+        request = utils.requests.get(
+            f"{utils.uri(host)}notfoundfile.scan",
+            params={
+                "AWSAccessKeyId": "AKIAI4UZT4FCOF2OTJYQ",
+                "Expires": "1766972005",
+                "Signature": "helloworld",
+            },
+        ) 
 
         if request.status_code == 403 and "AWSAccessKeyId" in request.text:
             bucket = re.findall("/.+/notfoundfile.scan",request.text)[0]
@@ -63,7 +64,7 @@ class S3Security(Plugin):
     @OnErrorReturnValue(False)
     def s3upload(self,bucket):
         s3   = boto3.client('s3', config=Config(signature_version=UNSIGNED))
-        path = "http://%s.s3.amazonaws.com/%s" % (bucket, self.path)
+        path = f"http://{bucket}.s3.amazonaws.com/{self.path}"
 
         s3.put_object(
             Bucket  = bucket,
@@ -72,10 +73,7 @@ class S3Security(Plugin):
             Body    = StringIO(self.content).read()
         )
 
-        if not ( self.content in utils.requests.get(path).text ):
-            return False
-
-        return path
+        return False if self.content not in utils.requests.get(path).text else path
 
     def main(self,host):
         bucket  = self.s3bucket(host)
@@ -83,15 +81,20 @@ class S3Security(Plugin):
         listing = self.s3list(bucket)
 
         if listing and upload:
-            return Result(SUCCESS,"Directory listing & File Upload: %s, %s" % (bucket,upload),None,None)
+            return Result(
+                SUCCESS,
+                f"Directory listing & File Upload: {bucket}, {upload}",
+                None,
+                None,
+            )
 
         if listing:
-            return Result(SUCCESS,"Directory listing: %s" % bucket,None,None)
+            return Result(SUCCESS, f"Directory listing: {bucket}", None, None)
 
         if upload:
-            return Result(SUCCESS,"File Upload: %s" % upload,None,None)
+            return Result(SUCCESS, f"File Upload: {upload}", None, None)
 
         if bucket != False:
-            return Result(INFO,"S3: %s is safe" % bucket,None,None)
+            return Result(INFO, f"S3: {bucket} is safe", None, None)
 
         return Result(FAILED,None,None,None)

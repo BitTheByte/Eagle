@@ -61,28 +61,27 @@ class Spider(Plugin):
         return None
 
     def sources(self,base,html):
-        urls   = []
         soup = BeautifulSoup(html,features="lxml")
-        for link in soup.findAll("a"):
-            urls.append( urllib.parse.urljoin(base, link.get("href")) )
-
-        for link in soup.findAll("script"):
-            urls.append( urllib.parse.urljoin(base, link.get("src")) )
-
+        urls = [
+            urllib.parse.urljoin(base, link.get("href"))
+            for link in soup.findAll("a")
+        ]
+        urls.extend(
+            urllib.parse.urljoin(base, link.get("src"))
+            for link in soup.findAll("script")
+        )
         return set(urls)
 
     def presquites(self, host):
-        if utils.isalive( utils.uri(host) ):
-            return True
-        return False
+        return bool(utils.isalive( utils.uri(host) ))
 
     @OnErrorReturnValue(False)
     def sip(self,host,url):
         html   = utils.requests.get(url).text
-        secret = self.get_secrets(html)
-
-        if not secret: return
-        self.__secrets[host].append(secret)
+        if secret := self.get_secrets(html):
+            self.__secrets[host].append(secret)
+        else:
+            return
 
     def main(self,host):
         base    = utils.uri(host)

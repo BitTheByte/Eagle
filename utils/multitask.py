@@ -38,24 +38,24 @@ class Channel(object):
 result = namedtuple("Result","func ret args channel wid")
 
 def _worker(wid,target,channel,lock,callback=None):
-    while( channel.open() ):
-            ok, args = channel.pop()
-            if not ok: time.sleep(0.50); continue
+    while ( channel.open() ):
+        ok, args = channel.pop()
+        if not ok: time.sleep(0.50); continue
 
-            try:
-                retval = target(*args)
-            except Exception  as e :
-                #print(str(e))
-                retval = None
-            
-            with lock: channel.jobs -= 1
+        try:
+            retval = target(*args)
+        except Exception  as e :
+            #print(str(e))
+            retval = None
 
-            if type(callback) != types.FunctionType and type(callback) != types.MethodType:
-                continue
-            
-            callback(
-                result(wid=wid,channel=channel,func=target,args=args,ret=retval)
-            )
+        with lock: channel.jobs -= 1
+
+        if type(callback) not in [types.FunctionType, types.MethodType]:
+            continue
+
+        callback(
+            result(wid=wid,channel=channel,func=target,args=args,ret=retval)
+        )
 
 def workers(target,channel,count=5,callback=None):
     lock = threading.Lock()

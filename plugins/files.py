@@ -10,15 +10,19 @@ class SensitiveFiles(Plugin):
         self.enable      = True
         self.description = ""
         self.concurrent  = 12
-        self.__files     = [line.strip() for line in open(sys.path[0]+"/plugins/files/senstivefiles.txt").readlines() if line.strip()]
+        self.__files = [
+            line.strip()
+            for line in open(
+                f"{sys.path[0]}/plugins/files/senstivefiles.txt"
+            ).readlines()
+            if line.strip()
+        ]
         self.__lock  = threading.Lock()
         self.__cache = {}
         self.__found = {}
 
     def presquites(self, host):
-        if utils.isalive( utils.uri(host) ):
-            return True
-        return False
+        return bool(utils.isalive( utils.uri(host) ))
 
     def check(self,host,path):
         base_len  = self.__cache[host]['base']
@@ -26,19 +30,35 @@ class SensitiveFiles(Plugin):
         full      = utils.uri(host) + path
         request   = utils.requests.get(full, verify=False)
 
-        if request.status_code != 200 or len(request.text.split("\n")) in [base_len, dummy_len] or not host in urlparse(request.url).hostname:
+        if (
+            request.status_code != 200
+            or len(request.text.split("\n")) in [base_len, dummy_len]
+            or host not in urlparse(request.url).hostname
+        ):
             return
 
         with self.__lock:
             self.__found[host].append(full)
 
     def main(self,host):
-        if not host in self.__cache.keys():
+        if host not in self.__cache.keys():
             self.__found.update({host: []})
-            self.__cache.update({host:{
-                'base' : len( utils.requests.get(utils.uri(host), verify=False).text.split("\n") ),
-                'dummy': len( utils.requests.get(utils.uri(host) + "nofoundfile12345", verify=False ).text.split("\n") )
-            }})
+            self.__cache.update(
+                {
+                    host: {
+                        'base': len(
+                            utils.requests.get(
+                                utils.uri(host), verify=False
+                            ).text.split("\n")
+                        ),
+                        'dummy': len(
+                            utils.requests.get(
+                                f"{utils.uri(host)}nofoundfile12345", verify=False
+                            ).text.split("\n")
+                        ),
+                    }
+                }
+            )
 
         channel = multitask.Channel(self.name)
         multitask.workers(self.check,channel,self.concurrent)

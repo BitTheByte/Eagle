@@ -20,11 +20,18 @@ banner_str = """
   Project Eagle - Main Engine
 """
 statup_time = datetime.datetime.now().strftime("%d-%m-%Y.%H.%M.%S")
-open(sys.path[0]+"/logs/%s.log" % statup_time , "a+").write(' '.join(sys.argv) + "\n")
+open(f"{sys.path[0]}/logs/{statup_time}.log", "a+").write(
+    ' '.join(sys.argv) + "\n"
+)
 
 parser = argparse.ArgumentParser(description='[*] Project Eagle - Manual' )
 parser.add_argument('--workers','-w',type=int, help='concurrent workers number default=5',default=5)
-parser.add_argument('--db',type=str,help='database file path',default=sys.path[0]+"/db/default.db.json")
+parser.add_argument(
+    '--db',
+    type=str,
+    help='database file path',
+    default=f"{sys.path[0]}/db/default.db.json",
+)
 parser.add_argument('-f','--file', help='targets file',type=str)
 parser.add_argument('-v','--verbose', help='increase output verbosity',action="count",default=0)
 parser.add_argument('-p','--ping',action='store_true', help='check availability of targets')
@@ -47,47 +54,33 @@ def output(level,msg):
             name  = s2s[level].upper(),
             reset = Fore.RESET
         ).ljust(19," ")
-        
+
         msg  = "[%s] |%s| %s\n" % (datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"),level,msg)
 
-        open(sys.path[0]+"/logs/%s.log" % statup_time , "a+").write(escape_ansi(msg))
+        open(f"{sys.path[0]}/logs/{statup_time}.log", "a+").write(escape_ansi(msg))
         print(msg,end='')
 
 def pprint(result):
     res   = result.ret
     host  = result.args[0]
     name  = result.channel.name
-    
-    if not res: return 
+
+    if not res: return
     if name == 'ping':
-        output(res.status,"%s" % (res.msg))
+        output(res.status, f"{res.msg}")
         return
 
     if args.verbose == 0 and res.status == SUCCESS:
-        output(SUCCESS,"plugin=%s, host=%s, msg=%s" % (
-            name,
-            host,
-            res.msg
-        ))
+        output(SUCCESS, f"plugin={name}, host={host}, msg={res.msg}")
 
-    if args.verbose == 1 and ( res.status == SUCCESS or res.status == WARNING ):
-        output(res.status,"plugin=%s, host=%s, msg=%s" % (
-            name,
-            host,
-            res.msg
-        ))
+    if args.verbose == 1 and res.status in [SUCCESS, WARNING]:
+        output(res.status, f"plugin={name}, host={host}, msg={res.msg}")
 
-    if args.verbose == 2 and ( res.status == SUCCESS or res.status == WARNING or res.status == ERROR):
-        output(res.status,"plugin=%s, host=%s, msg=%s" % (
-            name,
-            host,
-            res.msg
-        ))
+    if args.verbose == 2 and res.status in [SUCCESS, WARNING, ERROR]:
+        output(res.status, f"plugin={name}, host={host}, msg={res.msg}")
 
     if args.verbose == 3:
-        output(res.status,"plugin=%s, host=%s, status=%s, msg=%s" % (
-            name,
-            host,
-            s2s[res.status],
-            res.msg
-        ))
+        output(
+            res.status,
+            f"plugin={name}, host={host}, status={s2s[res.status]}, msg={res.msg}",
+        )

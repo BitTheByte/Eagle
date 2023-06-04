@@ -24,16 +24,14 @@ def sanitize(url):
 
 def urlschemes(host):
     schemes = []
-    if isalive("http://%s" % host):
+    if isalive(f"http://{host}"):
         schemes.append('http')
-    if isalive("https://%s" % host):
+    if isalive(f"https://{host}"):
         schemes.append('https')
     return schemes
 
 def urlscheme(host):
-    if isalive("https://%s" % host):
-        return "https"
-    return "http"
+    return "https" if isalive(f"https://{host}") else "http"
 
 def uri(host):
     scheme = urlscheme(host)

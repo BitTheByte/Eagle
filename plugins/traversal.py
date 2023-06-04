@@ -8,9 +8,7 @@ class PathTraveral(Plugin):
         self.description = ""
 
     def presquites(self, host):
-        if utils.isalive( utils.uri(host) ):
-            return True
-        return False
+        return bool(utils.isalive( utils.uri(host) ))
 
     def main(self,host):
         payloads = [

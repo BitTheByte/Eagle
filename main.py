@@ -32,7 +32,7 @@ def dbsave(result):
     res   = result.ret
     host  = result.args[0]
     name  = result.channel.name
-    if result.ret == None: return
+    if result.ret is None: return
 
     console.pprint(result)
     if name not in db.data: db.data[name] = {}

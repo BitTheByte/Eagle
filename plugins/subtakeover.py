@@ -9,12 +9,12 @@ class TakeOver(Plugin):
         self.name         = "Subdomain Takeover"
         self.enable       = True
         self.description  = ""
-        self.fingerprints = json.loads( open(sys.path[0]+"/plugins/files/fingerprints.json","r").read() )
+        self.fingerprints = json.loads(
+            open(f"{sys.path[0]}/plugins/files/fingerprints.json", "r").read()
+        )
 
     def presquites(self, host):
-        if utils.isalive( utils.uri(host) ):
-            return True
-        return False
+        return bool(utils.isalive( utils.uri(host) ))
 
     def vuln(self,host,html):
         answers = resolver.query(host, 'CNAME')
@@ -25,7 +25,7 @@ class TakeOver(Plugin):
             text    = fingerprint["fingerprint"]
 
             for ocname in cnames:
-                for c in fingerprint["cname"]:
+                for c in cname:
                     for t in text:
                         if (c in ocname) and (t in html):
                             return [service,ocname,t]

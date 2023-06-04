@@ -8,14 +8,12 @@ class CRLF(Plugin):
         self.description = ""
 
     def presquites(self, host):
-        if utils.isalive( utils.uri(host) ):
-            return True
-        return False
+        return bool(utils.isalive( utils.uri(host) ))
 
     def main(self,host):
         for payload in ["%0D%0A", "%E5%98%8A","%E5%98%8D"]:
             for scheme in utils.urlschemes(host):
-                poc     = scheme + "://" + host + "/" + payload + "header:crlf"
+                poc = f"{scheme}://{host}/{payload}header:crlf"
                 request = utils.requests.get(poc)
 
                 for _, value in list(request.headers.items()):
@@ -37,5 +35,5 @@ class CRLF(Plugin):
                                     request  = utils.dump_request(request),
                                     response = utils.dump_response(request)
                                 )
-            
+
         return Result(FAILED,None,utils.dump_request(request),utils.dump_response(request))

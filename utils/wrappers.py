@@ -9,23 +9,17 @@ class Requests(object):
         self.enable = True
 
     def token(self,method,*args,**kwargs):
-        if "url" in kwargs.keys():
+        if "url" in kwargs:
             url = kwargs["url"].encode("utf-8")
         else:
             url = args[0].encode("utf-8")
 
-        if "data" in kwargs.keys():
-            data = str(kwargs["data"]).encode("utf-8")
-        else:
-            data = b""
-
+        data = str(kwargs["data"]).encode("utf-8") if "data" in kwargs else b""
         return hashlib.md5(method.encode("utf-8") + url + data).hexdigest()
 
     def pre_request(self,token, args, kwargs):
         kwargs.update({'verify': False})
-        if (not self.enable)  or (not token in self.cache.keys()):
-            return False
-        return True
+        return bool(self.enable and token in self.cache.keys())
 
     def Request(self,*args,**kwargs):
         return requests.Request(*args,**kwargs)
